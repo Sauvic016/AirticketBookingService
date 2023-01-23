@@ -1,1 +1,3 @@
-module.exports = {};
+module.exports = {
+  BookingService: require("../services/booking-service"),
+};
