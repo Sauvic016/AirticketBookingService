@@ -14,7 +14,7 @@ class BookingService {
   async createBooking(data) {
     try {
       const flightId = data.flightId;
-      const getFlightRequestURL = `${FLIGHT_SERVICE_PATH}/api/v1/flights/${flightId}`;
+      const getFlightRequestURL = `${FLIGHT_SERVICE_PATH}/searchservice/api/v1/flights/${flightId}`;
       const response = await axios.get(getFlightRequestURL);
       const flightData = response.data.data;
       let priceOfTheFlight = flightData.price;
@@ -24,11 +24,11 @@ class BookingService {
       const totalCost = priceOfTheFlight * data.noOfSeats;
       const bookingPayload = { ...data, totalCost };
       const booking = await this.bookingRepository.create(bookingPayload);
-      const updateFlightRequestURL = `${FLIGHT_SERVICE_PATH}/api/v1/flights/${booking.flightId}`;
+      const updateFlightRequestURL = `${FLIGHT_SERVICE_PATH}/searchservice/api/v1/flights/${booking.flightId}`;
       await axios.patch(updateFlightRequestURL, { totalSeats: flightData.totalSeats - booking.noOfSeats });
       const finalBooking = await this.bookingRepository.update(booking.id, { status: "Booked" });
       // to get user details from  auth-service
-      const getUserRequestURL = `${AUTH_SERVICE_PATH}/api/v1/users/${finalBooking.userId}`;
+      const getUserRequestURL = `${AUTH_SERVICE_PATH}/authservice/api/v1/users/${finalBooking.userId}`;
       const authResponse = await axios.get(getUserRequestURL);
       const userData = authResponse.data.data;
 
